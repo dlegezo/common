@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <chrono>
@@ -7,10 +6,10 @@
 
 class profiler {
 private:
-    std::chrono::steady_clock::time_point start;
+    const std::string msg;
+    const std::chrono::steady_clock::time_point start;
     std::chrono::steady_clock::time_point stop;
-    std::string msg;
 public:
-    explicit profiler(const std::string &init_msg);
+    explicit profiler(const std::string& init_msg);
     ~profiler();
 };

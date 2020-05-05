@@ -1,15 +1,10 @@
-
 #include "profiler.h"
 
 using namespace std::chrono;
 
-profiler::profiler(const std::string &init_msg) {
-    start = steady_clock::now();
-    msg = init_msg;
-}
+profiler::profiler(const std::string& init_msg) : msg{init_msg}, start{steady_clock::now()} {}
 
 profiler::~profiler() {
     stop = steady_clock::now();
-    auto d = duration_cast<milliseconds>(stop - start);
-    std::cout << msg << ": " << d.count() << " ms" << std::endl;
+    std::cout << msg << ": " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
 }
