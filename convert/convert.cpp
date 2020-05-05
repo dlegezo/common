@@ -2,16 +2,18 @@
 
 using namespace std;
 
-converter::converter(istream_iterator<uint8_t> init_fit) : fit{init_fit} {}
+converter::converter(ifstream init_fs) : fs{move(init_fs)} {}
 
 converter::~converter() {};
 
 uint16_t converter::make_word() {
-    return *fit | (*(++fit) << 8);
+    return fs.get();
+//    return *fs | (*(++fs) << 8);
 }
 
 uint32_t converter::make_dword() {
-    return *fit | (*(++fit) << 8) | (*(++fit) << 8) | (*(++fit) << 8);
+    return fs.get();
+//    return *fs | (*(++fs) << 8) | (*(++fs) << 8) | (*(++fs) << 8);
 }
 
 //uint8_t get_byte(ifstream &fs) {

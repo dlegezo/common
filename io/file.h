@@ -6,12 +6,11 @@
 
 class file {
 private:
-    std::ifstream f;
-    std::istream_iterator<uint8_t> fit;
+    std::ifstream fs;
 public:
     explicit file(const std::string& fn);
     ~file();
-    std::istream_iterator<uint8_t> get();
+    std::ifstream get_fs();
 };
 
 //void dump_to_file(const std::string &fn, uint8_t *content, int len);

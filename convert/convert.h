@@ -5,9 +5,9 @@
 
 class converter {
 private:
-    std::istream_iterator<uint8_t> fit;
+    std::ifstream fs;
 public:
-    explicit converter(std::istream_iterator<uint8_t> init_fit);
+    explicit converter(std::ifstream init_fs);
     ~converter();
     uint16_t make_word();
     uint32_t make_dword();

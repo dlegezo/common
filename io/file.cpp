@@ -3,16 +3,15 @@
 using namespace std;
 
 file::file(const string& fn) {
-    f.open(fn);
-    fit = istream_iterator<uint8_t>(f);
+    fs.open(fn);
 }
 
 file::~file() {
-    f.close();
+    fs.close();
 }
 
-istream_iterator<uint8_t> file::get() {
-    return fit;
+ifstream file::get_fs() {
+    return move(fs);
 }
 
 
