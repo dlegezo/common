@@ -2,9 +2,21 @@
 
 using namespace std;
 
-converter::converter(ifstream init_fs) : fs{move(init_fs)} {}
+converter::converter() = default;
 
-converter::~converter() {};
+converter::~converter() = default;
+
+void converter::dexor(vector<uint8_t>::iterator enc_it, int e_len, vector<uint8_t>::iterator key_it, int k_len) {
+    auto key_it_cached = key_it;
+    for (int i=0; i<e_len; ++i) {
+        *enc_it = *enc_it ^ *key_it;
+        ++enc_it;
+        ++key_it;
+        if (i != 0 && i % k_len == 0) {
+            key_it = key_it_cached;
+        }
+    }
+};
 
 //
 //uint8_t combine_bytes(ifstream &fs) {
@@ -20,10 +32,4 @@ converter::~converter() {};
 //        b[i] = ((0x10 * u[0]) & 0xFF) | (u[1] & 0x0F);
 //    }
 //    return b;
-//}
-//
-//void dexor(uint8_t *b, int b_len, uint8_t *k, int k_len) {
-//    for (int i = 0; i < b_len ; i++) {
-//        b[i] ^= k[i % k_len];
-//    }
 //}

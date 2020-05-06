@@ -5,9 +5,10 @@ using namespace std;
 file::file(const string& name) {
     if (name.c_str()) {
         fs.open(name, ifstream::binary | ifstream::in);
-        if (!fs.is_open()) {
+        if (!fs.good()) {
             throw runtime_error("Please provide existing file name");
         }
+        size = filesystem::file_size(name);
     } else {
         throw runtime_error("File name couldn't be empty");
     }
@@ -15,6 +16,24 @@ file::file(const string& name) {
 
 file::~file() {
     fs.close();
+}
+
+uintmax_t file::get_size() {
+    return size;
+}
+
+vector<uint8_t>::iterator file::get_mapped_it() {
+    return mapped.begin();
+}
+
+//TODO check if not end of file
+void file::set_offset(int offset) {
+    fs.seekg(offset);
+}
+
+void file::map_file() {
+    mapped.reserve(size);
+    mapped = get_bytes(size);
 }
 
 vector<uint8_t> file::get_bytes(int len) {
@@ -28,15 +47,20 @@ vector<uint8_t> file::get_bytes(int len) {
     return move(r);
 }
 
-//TODO check if not end of file
-void file::set_offset(int offset) {
-    fs.seekg(offset);
+//TODO check if enough bytes are available
+void file::dump_stream_to_file(const std::string& name, int offset, int len) {
+    ofstream of(name, ofstream::binary | ofstream::out);
+    set_offset(offset);
+    of << get_bytes(len).data();
+    of.close();
 }
 
 //TODO check if enough bytes are available
-void file::dump_to_file(const std::string& name, int len) {
+void file::dump_mapped_to_file(const std::string& name, int offset, int len) {
     ofstream of(name, ofstream::binary | ofstream::out);
-    of << get_bytes(len).data();
+    auto m_it = mapped.begin() + offset;
+    vector<uint8_t> r(m_it, m_it + len);
+    of.write(reinterpret_cast<const char *>(r.data()), len - offset);
     of.close();
 }
 
