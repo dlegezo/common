@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <array>
 
 class file {
 private:
@@ -10,7 +11,9 @@ private:
 public:
     explicit file(const std::string& fn);
     ~file();
-    std::ifstream get_fs();
+    uint8_t get_byte();
+    std::array<uint8_t, 2> get_word();
+    std::array<uint8_t, 4> get_dword();
 };
 
 //void dump_to_file(const std::string &fn, uint8_t *content, int len);

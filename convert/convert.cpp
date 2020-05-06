@@ -6,33 +6,6 @@ converter::converter(ifstream init_fs) : fs{move(init_fs)} {}
 
 converter::~converter() {};
 
-uint16_t converter::make_word() {
-    return fs.get();
-//    return *fs | (*(++fs) << 8);
-}
-
-uint32_t converter::make_dword() {
-    return fs.get();
-//    return *fs | (*(++fs) << 8) | (*(++fs) << 8) | (*(++fs) << 8);
-}
-
-//uint8_t get_byte(ifstream &fs) {
-//    char b[1];
-//    fs.read(b, 1);
-//    return (uint8_t)b[0];
-//}
-//
-//uint16_t get_word(ifstream &fs) {
-//    uint8_t b[2];
-//    fs.read((char *)b, 2);
-//    return make_word(b);
-//}
-//
-//uint32_t get_dword(ifstream &fs) {
-//    uint8_t b[4];
-//    fs.read((char *)b, 4);
-//    return make_dword(b);
-//}
 //
 //uint8_t combine_bytes(ifstream &fs) {
 //    uint8_t u[2];
