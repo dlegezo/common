@@ -18,30 +18,14 @@ file::~file() {
     fs.close();
 }
 
-uint8_t file::get_byte() {
-    uint8_t b;
+vector<uint8_t> file::get_bytes(int l) {
+    uint8_t b[l];
+    std::vector<uint8_t> r;
     fs >> b;
-    return b;
-}
-
-array<uint8_t, 2> file::get_word() {
-    uint8_t b[2];
-    array<uint8_t, 2> r;
-    fs >> b;
-    r[0] = b[0];
-    r[1] = b[1];
-    return r;
-}
-
-array<uint8_t, 4> file::get_dword() {
-    uint8_t b[4];
-    array<uint8_t, 4> r;
-    fs >> b;
-    r[0] = b[0];
-    r[1] = b[1];
-    r[2] = b[2];
-    r[3] = b[3];
-    return r;
+    for (int i=0; i<l; i++) {
+        r.push_back(b[i]);   
+    }
+    return move(r);
 }
 
 //void dump_to_file(const string &fn, uint8_t *content, int len) {
