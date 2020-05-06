@@ -12,11 +12,21 @@ void converter::dexor(vector<uint8_t>::iterator enc_it, int e_len, vector<uint8_
         *enc_it = *enc_it ^ *key_it;
         ++enc_it;
         ++key_it;
-        if (i != 0 && i % k_len == 0) {
+        if (i != 0 && (i+1) % k_len == 0) {
             key_it = key_it_cached;
         }
     }
 };
+
+//void converter::dexor_key_change(vector<uint8_t>::iterator enc_it, int e_len, vector<uint8_t>& key, int k_len) {
+//    for (int i=0; i<e_len; ++i) {
+//        *enc_it = *enc_it ^ key[i % k_len];
+//        ++enc_it;
+//        if (i != 0 && (i+1) % k_len == 0) {
+//            key_it = key_it_cached;
+//        }
+//    }
+//};
 
 //
 //uint8_t combine_bytes(ifstream &fs) {
