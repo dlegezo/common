@@ -1,11 +1,10 @@
 #include "file.h"
-#include "../profiler/profiler.h"
 
 using namespace std;
 
-file::file(const string& fn) {
-    if (fn.c_str()) {
-        fs.open(fn);
+file::file(const string& name) {
+    if (name.c_str()) {
+        fs.open(name, ifstream::binary | ifstream::in);
         if (!fs.is_open()) {
             throw runtime_error("Please provide existing file name");
         }
@@ -18,28 +17,29 @@ file::~file() {
     fs.close();
 }
 
-vector<uint8_t> file::get_bytes(int l) {
-    uint8_t b[l];
+vector<uint8_t> file::get_bytes(int len) {
+    uint8_t b[len];
     std::vector<uint8_t> r;
-    fs >> b;
-    for (int i=0; i<l; i++) {
+    r.reserve(len);
+    fs.read(reinterpret_cast<char *>(b), len);
+    for (int i=0; i<len; i++) {
         r.push_back(b[i]);   
     }
     return move(r);
 }
 
-//void dump_to_file(const string &fn, uint8_t *content, int len) {
-//    ofstream fs(fn, ofstream::binary | ofstream::out);
-//    fs.write(reinterpret_cast<const char *>(content), len);
-//    fs.close();
-//}
-//
-//uint8_t *read_from_file(ifstream& fs, uint8_t *content, int offset, int len) {
-//    fs.seekg(offset);
-//    fs.read((char *)content, len);
-//    return content;
-//}
-//
+//TODO check if not end of file
+void file::set_offset(int offset) {
+    fs.seekg(offset);
+}
+
+//TODO check if enough bytes are available
+void file::dump_to_file(const std::string& name, int len) {
+    ofstream of(name, ofstream::binary | ofstream::out);
+    of << get_bytes(len).data();
+    of.close();
+}
+
 //size_t find_in_file(ifstream& fs, const string& k) {
 //    stringstream ss;
 //    auto a = fs.tellg();
