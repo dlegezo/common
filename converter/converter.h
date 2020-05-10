@@ -4,12 +4,17 @@
 #include <iterator>
 #include <vector>
 
+typedef std::vector<uint8_t> storage;
+typedef std::vector<uint8_t>::iterator storage_it;
+
 class converter {
 private:
 public:
     explicit converter();
     ~converter();
-    void dexor(std::vector<uint8_t>::iterator enc_it, int e_len, std::vector<uint8_t>::iterator key, int k_len);
+    uint32_t vector_to_dword(storage_it);
+    void dexor(storage_it enc_it, int e_len, storage_it key, int k_len);
+    void dexor_key_change(storage_it enc_it, int e_len, storage_it key_it, int k_len);
 };
 
 //uint8_t combine_bytes(std::ifstream &fs);

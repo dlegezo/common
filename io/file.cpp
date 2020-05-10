@@ -22,7 +22,7 @@ uintmax_t file::get_size() {
     return size;
 }
 
-vector<uint8_t>::iterator file::get_mapped_it() {
+storage_it file::get_mapped_it() {
     return mapped.begin();
 }
 
@@ -38,7 +38,7 @@ void file::map_file() {
 
 vector<uint8_t> file::get_bytes(int len) {
     uint8_t b[len];
-    std::vector<uint8_t> r;
+    storage r;
     r.reserve(len);
     fs.read(reinterpret_cast<char *>(b), len);
     for (int i=0; i<len; i++) {
@@ -59,7 +59,7 @@ void file::dump_stream_to_file(const std::string& name, int offset, int len) {
 void file::dump_mapped_to_file(const std::string& name, int offset, int len) {
     ofstream of(name, ofstream::binary | ofstream::out);
     auto m_it = mapped.begin() + offset;
-    vector<uint8_t> r(m_it, m_it + len);
+    storage r(m_it, m_it + len);
     of.write(reinterpret_cast<const char *>(r.data()), len - offset);
     of.close();
 }
