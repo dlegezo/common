@@ -5,9 +5,7 @@
 #include <iterator>
 #include <vector>
 #include <filesystem>
-
-typedef std::vector<uint8_t> storage;
-typedef std::vector<uint8_t>::iterator storage_it;
+#include "../base/base.h"
 
 class file {
 private:
