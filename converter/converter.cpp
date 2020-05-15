@@ -23,7 +23,7 @@ void converter::dword_to_storage(uint32_t dw, storage_it v_it) {
 
 void converter::dexor(storage_it enc_it, int e_len, storage_it key_it, int k_len) {
     for (int i=0; i<e_len; ++i) {
-        *enc_it = *enc_it ^ key_it.[i % k_len];
+        *enc_it = *enc_it ^ key_it[i % k_len];
         ++enc_it;
     }
 }
