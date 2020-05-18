@@ -2,7 +2,7 @@ Common custom decryption C++ libraries
 
 Usage sample:
 
-#include "./malware/microcin/microcin.h"
+```#include "./malware/microcin/microcin.h"
 
 using namespace std;
 
@@ -15,4 +15,4 @@ int main() {
         cout << e.what();
         return 1;
     }
-}
+}```
