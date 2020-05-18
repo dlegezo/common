@@ -6,20 +6,33 @@
 #include <vector>
 #include <filesystem>
 #include "../base/base.h"
+#include "../converter/converter.h"
 
 class file {
 private:
     std::ifstream fs;
     uintmax_t size;
-    storage mapped;
+    storage_p mapping;
 public:
     explicit file(const std::string& name);
     ~file();
-    uintmax_t get_size();
-    storage_it get_mapped_it();
-    void set_offset(int offset);
+
+    // memory mapping
     void map_file();
-    storage get_bytes(int len);
+    storage_p get_mapping();
+
+    // moving back and forward
+    uintmax_t get_size();
+    void set_offset(int offset, int mode); // 0 - beg, 1 - end, other - cur
+
+    // obtain content
+    storage_p get_bytes(int len);
+    uint8_t get_byte();
+    uint16_t get_word();
+    uint32_t get_dword();
+
+    // save to disk
+    void dump_to_file(const std::string& name, storage_p content);
     void dump_stream_to_file(const std::string& name, int offset, int len);
     void dump_mapped_to_file(const std::string& name, int offset, int len);
 };

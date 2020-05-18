@@ -2,17 +2,16 @@
 
 using namespace std;
 
-void print_vector(storage_it start_it, const storage_it end_it) {
-    while (start_it != end_it) {
-        cout << setw(2) << setfill('0') << hex << static_cast<int>(*start_it) << " ";
-        start_it = next(start_it, 1);
+void print_storage_hex(const storage_p ps) {
+    for (auto e : *ps) {
+        cout << setw(2) << setfill('0') << hex << static_cast<int>(e) << " ";
     }
     cout << endl;
 }
 
-void print_vector_len(storage_it start_it, const int len) {
-    for (int i=0; i<len; ++i) {
-        cout << setw(2) << setfill('0') << hex << static_cast<int>(start_it[i]) << " ";
+void print_storage_ascii(const storage_p ps) {
+    for (auto e : *ps) {
+        cout << e;
     }
     cout << endl;
 }

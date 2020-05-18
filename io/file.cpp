@@ -22,21 +22,27 @@ uintmax_t file::get_size() {
     return size;
 }
 
-storage_it file::get_mapped_it() {
-    return mapped.begin();
+storage_p file::get_mapping() {
+    return mapping;
 }
 
 //TODO check if not end of file
-void file::set_offset(int offset) {
-    fs.seekg(offset);
+void file::set_offset(int offset, int mode = 0) {
+    if (!mode) {
+        fs.seekg(offset, std::ios_base::beg);
+    } else if (mode == 1) {
+        fs.seekg(offset, std::ios_base::end);
+    } else {
+        fs.seekg(offset, std::ios_base::cur);
+    }
 }
 
 void file::map_file() {
-    mapped.reserve(size);
-    mapped = get_bytes(size);
+    mapping->reserve(size);
+    mapping = get_bytes(size);
 }
 
-vector<uint8_t> file::get_bytes(int len) {
+storage_p file::get_bytes(int len) {
     uint8_t b[len];
     storage r;
     r.reserve(len);
@@ -44,21 +50,40 @@ vector<uint8_t> file::get_bytes(int len) {
     for (int i=0; i<len; i++) {
         r.push_back(b[i]);   
     }
-    return move(r);
+    return make_shared<storage>(r);
 }
 
-//TODO check if enough bytes are available
-void file::dump_stream_to_file(const std::string& name, int offset, int len) {
+uint8_t file::get_byte() {
+    return get_bytes(1)->at(0);
+}
+
+uint16_t file::get_word() {
+    return storage_to_word(get_bytes(2));
+}
+
+uint32_t file::get_dword() {
+    return storage_to_dword(get_bytes(4));
+}
+
+void file::dump_to_file(const string& name, storage_p content) {
+    ofstream of(name, ofstream::binary | ofstream::out);
+    of << content->data();
+    of.close();
+}
+
+// TODO check if enough bytes are available
+// TODO check if string_view is possible
+void file::dump_stream_to_file(const string& name, int offset, int len) {
     ofstream of(name, ofstream::binary | ofstream::out);
     set_offset(offset);
-    of << get_bytes(len).data();
+    of << get_bytes(len)->data();
     of.close();
 }
 
 //TODO check if enough bytes are available
-void file::dump_mapped_to_file(const std::string& name, int offset, int len) {
+void file::dump_mapped_to_file(const string& name, int offset, int len) {
     ofstream of(name, ofstream::binary | ofstream::out);
-    auto m_it = mapped.begin() + offset;
+    auto m_it = mapping->begin() + offset;
     storage r(m_it, m_it + len);
     of.write(reinterpret_cast<const char *>(r.data()), len - offset);
     of.close();

@@ -5,5 +5,5 @@
 #include <iomanip>
 #include "../base/base.h"
 
-void print_vector(const storage_it start_it, const storage_it end_it);
-void print_vector_len(const storage_it start_it, const int len);
+void print_storage_hex(const storage_p ps);
+void print_storage_ascii(const storage_p ps);
