@@ -2,12 +2,16 @@
 
 using namespace std;
 
-uint32_t storage_to_dword(storage_p ps) {
-    return (ps->at(3) << 24) | ps->at(2) << 16 | (ps->at(1) << 8) | ps->at(0);
-};
+uint8_t storage_to_byte(storage_p ps) {
+    return ps->at(0);
+}
 
 uint16_t storage_to_word(storage_p ps) {
     return (ps->at(1) << 8) | ps->at(0);
+};
+
+uint32_t storage_to_dword(storage_p ps) {
+    return (ps->at(3) << 24) | ps->at(2) << 16 | (ps->at(1) << 8) | ps->at(0);
 };
 
 void dword_to_storage(uint32_t dw, storage_p ps) {
@@ -16,6 +20,22 @@ void dword_to_storage(uint32_t dw, storage_p ps) {
         dw = dw >> 8;
     }
 };
+
+// for microcin - take nearby hex bytes and keep only two digits in resulting bin byte
+storage_p hex_to_bin(storage_p hex) {
+    storage r;
+    storage_it it = hex->begin();
+    while (it != hex->end()) {
+        r.push_back(((0x10 * (*it)) & 0xFF) | ((*next(it)) & 0x0F));
+        if (it != hex->end()) {
+            it = next(it);
+        }
+        if (it != hex->end()) {
+            it = next(it);
+        }
+    }
+    return make_shared<storage>(r);
+}
 
 void dexor(storage_p enc, storage_p key_it, int k_len) {
     for (int i=0; i < enc->size(); ++i) {

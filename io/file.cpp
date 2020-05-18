@@ -22,6 +22,11 @@ uintmax_t file::get_size() {
     return size;
 }
 
+void file::map_file() {
+    mapping->reserve(size);
+    mapping = get_bytes(size);
+}
+
 storage_p file::get_mapping() {
     return mapping;
 }
@@ -35,11 +40,6 @@ void file::set_offset(int offset, int mode = 0) {
     } else {
         fs.seekg(offset, std::ios_base::cur);
     }
-}
-
-void file::map_file() {
-    mapping->reserve(size);
-    mapping = get_bytes(size);
 }
 
 storage_p file::get_bytes(int len) {
@@ -67,7 +67,7 @@ uint32_t file::get_dword() {
 
 void file::dump_to_file(const string& name, storage_p content) {
     ofstream of(name, ofstream::binary | ofstream::out);
-    of << content->data();
+    of.write(reinterpret_cast<const char *>(content->data()), content->size());
     of.close();
 }
 
@@ -76,7 +76,7 @@ void file::dump_to_file(const string& name, storage_p content) {
 void file::dump_stream_to_file(const string& name, int offset, int len) {
     ofstream of(name, ofstream::binary | ofstream::out);
     set_offset(offset);
-    of << get_bytes(len)->data();
+    of.write(reinterpret_cast<const char *>(get_bytes(len)->data()), len);
     of.close();
 }
 
