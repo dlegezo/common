@@ -43,16 +43,17 @@ void dexor(storage_p enc, storage_p key_it, int k_len) {
     }
 }
 
-//void dexor_key_change(storage_it enc_it, int e_len, storage_it key_it, int k_len) {
-//    for (auto i=0; i < e_len; ++i) {
-//        *enc_it = *enc_it ^ key_it[i % k_len];
-//        ++enc_it;
-//        if (i != 0 && (i+1) % k_len == 0) {
-//            auto dw_vec = storage_to_dword(key_it);
-//            auto dw_dec = storage_to_dword(prev(enc_it,4));
-//            auto t = dw_dec + dw_vec;
-//            dword_to_storage(t, key_it);
-//            print_storage_ascii(key_it, 4);
-//        }
-//    }
-//};
+void dexor_key_change(storage_p enc, storage_p key) {
+    size_t key_len = key->size();
+    for (int i=0; i < enc->size(); ++i) {
+        enc->at(i) = enc->at(i) ^ key->at(i % key_len);
+        if (i != 0 && (i+1) % key_len == 0) {
+            // key scheduling round - convert to dword and sum with decrypted
+            uint32_t dw_curr_key = storage_to_dword(key);
+            storage st(enc->begin()+i-3, enc->begin()+i+1);
+            uint32_t dw_dec = storage_to_dword(make_shared<storage>(st));
+            uint32_t dwt = dw_curr_key + dw_dec;
+            dword_to_storage(dwt, key);
+        }
+    }
+};

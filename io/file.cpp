@@ -23,12 +23,23 @@ uintmax_t file::get_size() {
 }
 
 void file::map_file() {
-    mapping->reserve(size);
+    storage s;
+    s.reserve(size);
+    mapping = make_shared<storage>(s);
     mapping = get_bytes(size);
 }
 
 storage_p file::get_mapping() {
     return mapping;
+}
+
+//TODO check mapping boundaries
+void file::patch_mapping(storage_p dec, int offset) {
+    int i = 0;
+    for (auto e : *dec) {
+        mapping->at(offset+i) = e;
+        ++i;
+    }
 }
 
 //TODO check if not end of file
@@ -42,13 +53,28 @@ void file::set_offset(int offset, int mode = 0) {
     }
 }
 
+size_t file::find_in_mapping(const storage_p k) {
+    int i = 0;
+    const size_t key_size = k->size();
+    auto it = find(mapping->begin(), mapping->end(), k->at(i));
+    while (i<key_size && it != mapping->end()) {
+        i++;
+        it = find(mapping->begin(), mapping->end(), k->at(i));
+    }
+    if (i == key_size) {
+        return distance(mapping->begin(), it);
+    }
+    return -1;
+}
+
+// TODO is it possible to read to vector without temp var
 storage_p file::get_bytes(int len) {
     uint8_t b[len];
     storage r;
     r.reserve(len);
     fs.read(reinterpret_cast<char *>(b), len);
     for (int i=0; i<len; i++) {
-        r.push_back(b[i]);   
+        r.push_back(b[i]);
     }
     return make_shared<storage>(r);
 }
@@ -73,7 +99,7 @@ void file::dump_to_file(const string& name, storage_p content) {
 
 // TODO check if enough bytes are available
 // TODO check if string_view is possible
-void file::dump_stream_to_file(const string& name, int offset, int len) {
+void file::dump_region_to_file(const string &name, int offset, int len) {
     ofstream of(name, ofstream::binary | ofstream::out);
     set_offset(offset);
     of.write(reinterpret_cast<const char *>(get_bytes(len)->data()), len);
@@ -81,18 +107,8 @@ void file::dump_stream_to_file(const string& name, int offset, int len) {
 }
 
 //TODO check if enough bytes are available
-void file::dump_mapped_to_file(const string& name, int offset, int len) {
+void file::dump_mapping_to_file(const string& name) {
     ofstream of(name, ofstream::binary | ofstream::out);
-    auto m_it = mapping->begin() + offset;
-    storage r(m_it, m_it + len);
-    of.write(reinterpret_cast<const char *>(r.data()), len - offset);
+    of.write(reinterpret_cast<const char *>(mapping->data()), size);
     of.close();
 }
-
-//size_t find_in_file(ifstream& fs, const string& k) {
-//    stringstream ss;
-//    auto a = fs.tellg();
-//    ss << fs.rdbuf();
-//    fs.seekg(a);
-//    return ss.str().find(k);
-//}
