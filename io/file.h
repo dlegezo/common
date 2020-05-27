@@ -23,7 +23,7 @@ public:
     void patch_mapping(storage_p dec, int offset);
 
     // moving back and forward
-    uintmax_t get_size();
+    uintmax_t get_size() const;
     void set_offset(int offset, int mode); // 0 - beg, 1 - end, other - cur
     size_t find_in_mapping(const storage_p k);
 

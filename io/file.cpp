@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// TODO check if string_view is possible through all the code
 file::file(const string& name) {
     if (name.c_str()) {
         fs.open(name, ifstream::binary | ifstream::in);
@@ -18,7 +19,7 @@ file::~file() {
     fs.close();
 }
 
-uintmax_t file::get_size() {
+uintmax_t file::get_size() const {
     return size;
 }
 
@@ -33,7 +34,6 @@ storage_p file::get_mapping() {
     return mapping;
 }
 
-//TODO check mapping boundaries
 void file::patch_mapping(storage_p dec, int offset) {
     int i = 0;
     for (auto e : *dec) {
@@ -42,7 +42,6 @@ void file::patch_mapping(storage_p dec, int offset) {
     }
 }
 
-//TODO check if not end of file
 void file::set_offset(int offset, int mode = 0) {
     if (!mode) {
         fs.seekg(offset, std::ios_base::beg);
@@ -67,15 +66,10 @@ size_t file::find_in_mapping(const storage_p k) {
     return -1;
 }
 
-// TODO is it possible to read to vector without temp var
 storage_p file::get_bytes(int len) {
     uint8_t b[len];
-    storage r;
-    r.reserve(len);
-    fs.read(reinterpret_cast<char *>(b), len);
-    for (int i=0; i<len; i++) {
-        r.push_back(b[i]);
-    }
+  	fs.read(reinterpret_cast<char *>(b), len);
+  	storage r(b, b+len);
     return make_shared<storage>(r);
 }
 
@@ -97,8 +91,6 @@ void file::dump_to_file(const string& name, storage_p content) {
     of.close();
 }
 
-// TODO check if enough bytes are available
-// TODO check if string_view is possible
 void file::dump_region_to_file(const string &name, int offset, int len) {
     ofstream of(name, ofstream::binary | ofstream::out);
     set_offset(offset);
@@ -106,7 +98,6 @@ void file::dump_region_to_file(const string &name, int offset, int len) {
     of.close();
 }
 
-//TODO check if enough bytes are available
 void file::dump_mapping_to_file(const string& name) {
     ofstream of(name, ofstream::binary | ofstream::out);
     of.write(reinterpret_cast<const char *>(mapping->data()), size);
