@@ -5,6 +5,7 @@
 #include <iterator>
 #include <vector>
 #include <filesystem>
+#include <algorithm>
 #include "../base/base.h"
 #include "../converter/converter.h"
 
@@ -15,7 +16,7 @@ private:
     storage_p mapping;
 public:
     explicit file(const std::string& name);
-    ~file();
+    virtual ~file();
 
     // memory mapping
     void map_file();
@@ -25,7 +26,7 @@ public:
     // moving back and forward
     uintmax_t get_size() const;
     void set_offset(int offset, int mode); // 0 - beg, 1 - end, other - cur
-    size_t find_in_mapping(const storage_p k);
+    storage_it find_in_mapping(storage_p k);
 
     // obtain content
     storage_p get_bytes(int len);

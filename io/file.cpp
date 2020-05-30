@@ -11,7 +11,7 @@ file::file(const string& name) {
         }
         size = filesystem::file_size(name);
     } else {
-        throw runtime_error("File name couldn't be empty");
+      	throw runtime_error("File name couldn't be empty");
     }
 }
 
@@ -23,15 +23,15 @@ uintmax_t file::get_size() const {
     return size;
 }
 
+storage_p file::get_mapping() {
+  return mapping;
+}
+
 void file::map_file() {
     storage s;
     s.reserve(size);
     mapping = make_shared<storage>(s);
     mapping = get_bytes(size);
-}
-
-storage_p file::get_mapping() {
-    return mapping;
 }
 
 void file::patch_mapping(storage_p dec, int offset) {
@@ -52,18 +52,8 @@ void file::set_offset(int offset, int mode = 0) {
     }
 }
 
-size_t file::find_in_mapping(const storage_p k) {
-    int i = 0;
-    const size_t key_size = k->size();
-    auto it = find(mapping->begin(), mapping->end(), k->at(i));
-    while (i<key_size && it != mapping->end()) {
-        i++;
-        it = find(mapping->begin(), mapping->end(), k->at(i));
-    }
-    if (i == key_size) {
-        return distance(mapping->begin(), it);
-    }
-    return -1;
+storage_it file::find_in_mapping(const storage_p k) {
+	return search(mapping->begin(), mapping->end(), k->begin(), k->end());
 }
 
 storage_p file::get_bytes(int len) {
