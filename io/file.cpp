@@ -59,8 +59,13 @@ storage_it file::find_in_mapping(const storage_p k) {
 storage_p file::get_bytes(int len) {
     uint8_t b[len];
   	fs.read(reinterpret_cast<char *>(b), len);
-  	storage r(b, b+len);
-    return make_shared<storage>(r);
+  	if (fs.gcount()) {
+	  storage r(b, b+len);
+	  return make_shared<storage>(r);
+  	} else {
+  	  runtime_error e("End of input file");
+  	  throw e;
+  	}
 }
 
 uint8_t file::get_byte() {
