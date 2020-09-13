@@ -43,7 +43,8 @@ void dexor(storage_p enc, storage_p key_it, int k_len) {
     }
 }
 
-void dexor_key_change(storage_p enc, storage_p key) {
+//TODO move to corresponding modules
+void dexor_lucky_mouse(storage_p enc, storage_p key) {
     size_t key_len = key->size();
     for (int i=0; i < enc->size(); ++i) {
         enc->at(i) = enc->at(i) ^ key->at(i % key_len);
@@ -54,6 +55,18 @@ void dexor_key_change(storage_p enc, storage_p key) {
             uint32_t dw_dec = storage_to_dword(make_shared<storage>(st));
             uint32_t dwt = dw_curr_key + dw_dec;
             dword_to_storage(dwt, key);
+        }
+    }
+};
+
+void dexor_montys_three(storage_p enc, storage_p key) {
+    for (int i=0; i < enc->size(); ++i) {
+        enc->at(i) = enc->at(i) ^ key->at(i & 3);
+        if (i && !(i & 3)) {
+            // key scheduling round - convert to dword and rotate
+            uint32_t dw_curr_key = storage_to_dword(key);
+            dw_curr_key ^= 8 * (dw_curr_key ^ (dw_curr_key << 20));
+            dword_to_storage(dw_curr_key, key);
         }
     }
 };

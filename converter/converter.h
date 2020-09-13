@@ -16,4 +16,5 @@ storage_p hex_to_bin(storage_p hex);
 
 //  decryption algorithms
 void dexor(storage_p enc, storage_p key, int k_len);
-void dexor_key_change(storage_p enc, storage_p key);
+void dexor_lucky_mouse(storage_p enc, storage_p key);
+void dexor_montys_three(storage_p enc, storage_p key);

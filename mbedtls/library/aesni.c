@@ -25,7 +25,7 @@
  */
 
 #if !defined(MBEDTLS_CONFIG_FILE)
-#include "mbedtls/config.h"
+#include "../include/mbedtls/config.h"
 #else
 #include MBEDTLS_CONFIG_FILE
 #endif
@@ -38,7 +38,7 @@
 #endif
 #endif
 
-#include "mbedtls/aesni.h"
+#include "../include/mbedtls/aesni.h"
 
 #include <string.h>
 
