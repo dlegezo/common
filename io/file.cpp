@@ -93,6 +93,7 @@ void file::dump_region_to_file(const string &name, int offset, int len) {
     of.close();
 }
 
+// check connection
 void file::dump_mapping_to_file(const string& name) {
     ofstream of(name, ofstream::binary | ofstream::out);
     of.write(reinterpret_cast<const char *>(mapping->data()), size);
